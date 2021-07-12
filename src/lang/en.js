@@ -116,7 +116,7 @@ const en = {
       title: 'Status',
     },
     upload: {
-      ifExist: 'If file exist:',
+      ifExist: 'If file exists:',
       noSelected: 'No files selected!',
       overwrite: 'Overwrite!',
       selected: 'Selected:',
