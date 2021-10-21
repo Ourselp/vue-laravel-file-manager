@@ -25,6 +25,11 @@
                         {{ bytesToHuman(item.size) }}
                     </div>
                 </div>
+                <div class="d-flex justify-content-between" v-if="alertFilesTooBig">
+                  <p class="text-danger">
+                      Error, Max 1 MB per file, 
+                  </p>
+                </div>
                 <hr>
                 <div class="d-flex justify-content-between">
                     <div>
@@ -83,13 +88,10 @@
             </div>
         </div>
         <div class="modal-footer">
-            <template v-if="filesTooBig">
-              One file is too big, Max 1Mb per files
-            </template>
             <button class="btn"
                     type="button"
                     v-bind:class="[countFiles ? 'btn-info' : 'btn-light']"
-                    v-bind:disabled="(!countFiles || filesTooBig)"
+                    v-bind:disabled="(!countFiles || alertFilesTooBig)"
                     v-on:click="uploadFiles">{{ lang.btn.submit }}
             </button>
             <button type="button" class="btn btn-light" v-on:click="hideModal()">{{ lang.btn.cancel }}</button>
@@ -112,6 +114,7 @@ export default {
 
       // overwrite if exists
       overwrite: 0,
+      alertFilesTooBig: false
     };
   },
   computed: {
@@ -166,6 +169,21 @@ export default {
      * @param event
      */
     selectFiles(event) {
+      let triggerAlert = false
+      if (event.target.files) {
+        for (const index of Object.entries(event.target.files)) {
+          if (index && index[1] && index[1].size > 1048576) { 
+            triggerAlert = true
+          }
+        }
+      }
+
+      if (triggerAlert) {
+        this.alertFilesTooBig = true 
+      } else {
+        this.alertFilesTooBig = false
+      }
+
       // files selected?
       if (event.target.files.length === 0) {
         // no file selected
