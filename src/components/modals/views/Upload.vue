@@ -83,10 +83,13 @@
             </div>
         </div>
         <div class="modal-footer">
+            <template v-if="filesTooBig">
+              One file is too big, Max 1Mb per files
+            </template>
             <button class="btn"
                     type="button"
                     v-bind:class="[countFiles ? 'btn-info' : 'btn-light']"
-                    v-bind:disabled="!countFiles"
+                    v-bind:disabled="(!countFiles || filesTooBig)"
                     v-on:click="uploadFiles">{{ lang.btn.submit }}
             </button>
             <button type="button" class="btn btn-light" v-on:click="hideModal()">{{ lang.btn.cancel }}</button>
@@ -142,6 +145,19 @@ export default {
 
       return this.bytesToHuman(size);
     },
+
+    filesTooBig() {
+      let size = 0;
+
+      let fileAboveOneMb = false
+      for (let i = 0; i < this.newFiles.length; i += 1) {
+        if (this.newFiles[i].size > 1000000) {
+          fileAboveOneMb = true
+        }
+      }
+
+      return fileAboveOneMb;
+    }
 
   },
   methods: {
