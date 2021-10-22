@@ -25,9 +25,9 @@
                         {{ bytesToHuman(item.size) }}
                     </div>
                 </div>
-                <div class="d-flex justify-content-between" v-if="alertFilesTooBig">
-                  <p class="text-danger">
-                      Error, Max 1 MB per file, 
+                <div class="d-flex justify-content-center" v-if="alertFilesTooBig">
+                  <p class="text-danger" :style="{'font-weight' : '700', 'text-align': 'center'}">
+                      Error, Max 1 MB per file. 
                   </p>
                 </div>
                 <hr>
