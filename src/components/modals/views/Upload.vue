@@ -25,11 +25,6 @@
                         {{ bytesToHuman(item.size) }}
                     </div>
                 </div>
-                <div class="d-flex justify-content-center" v-if="alertFilesTooBig">
-                  <p class="text-danger" :style="{'font-weight' : '700', 'text-align': 'center'}">
-                      Error, Max 1 MB per file. 
-                  </p>
-                </div>
                 <hr>
                 <div class="d-flex justify-content-between">
                     <div>
@@ -91,7 +86,7 @@
             <button class="btn"
                     type="button"
                     v-bind:class="[countFiles ? 'btn-info' : 'btn-light']"
-                    v-bind:disabled="(!countFiles || alertFilesTooBig)"
+                    v-bind:disabled="!countFiles"
                     v-on:click="uploadFiles">{{ lang.btn.submit }}
             </button>
             <button type="button" class="btn btn-light" v-on:click="hideModal()">{{ lang.btn.cancel }}</button>
@@ -113,8 +108,7 @@ export default {
       newFiles: [],
 
       // overwrite if exists
-      overwrite: 0,
-      alertFilesTooBig: false
+      overwrite: 0
     };
   },
   computed: {
@@ -149,19 +143,6 @@ export default {
       return this.bytesToHuman(size);
     },
 
-    filesTooBig() {
-      let size = 0;
-
-      let fileAboveOneMb = false
-      for (let i = 0; i < this.newFiles.length; i += 1) {
-        if (this.newFiles[i].size > 1000000) {
-          fileAboveOneMb = true
-        }
-      }
-
-      return fileAboveOneMb;
-    }
-
   },
   methods: {
     /**
@@ -169,21 +150,6 @@ export default {
      * @param event
      */
     selectFiles(event) {
-      let triggerAlert = false
-      if (event.target.files) {
-        for (const index of Object.entries(event.target.files)) {
-          if (index && index[1] && index[1].size > 1048576) { 
-            triggerAlert = true
-          }
-        }
-      }
-
-      if (triggerAlert) {
-        this.alertFilesTooBig = true 
-      } else {
-        this.alertFilesTooBig = false
-      }
-
       // files selected?
       if (event.target.files.length === 0) {
         // no file selected
